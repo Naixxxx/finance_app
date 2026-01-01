@@ -8,26 +8,21 @@ import org.com.financeApp.infra.InMemoryWalletRepository;
 import org.com.financeApp.services.*;
 
 public class Main {
-    public static void main(String[] args) {
-        UserRepository userRepo = new InMemoryUserRepository();
-        WalletRepository walletRepo = new InMemoryWalletRepository();
+  public static void main(String[] args) {
+    UserRepository userRepo = new InMemoryUserRepository();
+    WalletRepository walletRepo = new InMemoryWalletRepository();
 
-        AuthorizationService authService = new AuthorizationService(userRepo);
-        WalletService walletService = new WalletService(walletRepo);
+    AuthorizationService authService = new AuthorizationService(userRepo);
+    WalletService walletService = new WalletService(walletRepo);
 
-        StatsService statsService = new StatsService();
-        ReportService reportService = new ReportService(statsService);
+    StatsService statsService = new StatsService();
+    ReportService reportService = new ReportService(statsService);
 
-        WalletFileStorage walletStorage = new WalletFileStorage(); // ./data по умолчанию
+    WalletFileStorage walletStorage = new WalletFileStorage(); // ./data по умолчанию
 
-        CommandLoop loop = new CommandLoop(
-                authService,
-                walletService,
-                walletRepo,
-                walletStorage,
-                reportService
-        );
+    CommandLoop loop =
+        new CommandLoop(authService, walletService, walletRepo, walletStorage, reportService);
 
-        loop.run();
-    }
+    loop.run();
+  }
 }
