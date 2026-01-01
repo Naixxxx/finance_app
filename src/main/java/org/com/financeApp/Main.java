@@ -1,17 +1,33 @@
 package org.com.financeApp;
 
-//TIP To <b>Run</b> code, press <shortcut actionId="Run"/> or
-// click the <icon src="AllIcons.Actions.Execute"/> icon in the gutter.
+import org.com.financeApp.cli.CommandLoop;
+import org.com.financeApp.core.repository.UserRepository;
+import org.com.financeApp.core.repository.WalletRepository;
+import org.com.financeApp.infra.InMemoryUserRepository;
+import org.com.financeApp.infra.InMemoryWalletRepository;
+import org.com.financeApp.services.*;
+
 public class Main {
     public static void main(String[] args) {
-        //TIP Press <shortcut actionId="ShowIntentionActions"/> with your caret at the highlighted text
-        // to see how IntelliJ IDEA suggests fixing it.
-        System.out.printf("Hello and welcome!");
+        UserRepository userRepo = new InMemoryUserRepository();
+        WalletRepository walletRepo = new InMemoryWalletRepository();
 
-        for (int i = 1; i <= 5; i++) {
-            //TIP Press <shortcut actionId="Debug"/> to start debugging your code. We have set one <icon src="AllIcons.Debugger.Db_set_breakpoint"/> breakpoint
-            // for you, but you can always add more by pressing <shortcut actionId="ToggleLineBreakpoint"/>.
-            System.out.println("i = " + i);
-        }
+        AuthorizationService authService = new AuthorizationService(userRepo);
+        WalletService walletService = new WalletService(walletRepo);
+
+        StatsService statsService = new StatsService();
+        ReportService reportService = new ReportService(statsService);
+
+        WalletFileStorage walletStorage = new WalletFileStorage(); // ./data по умолчанию
+
+        CommandLoop loop = new CommandLoop(
+                authService,
+                walletService,
+                walletRepo,
+                walletStorage,
+                reportService
+        );
+
+        loop.run();
     }
 }
